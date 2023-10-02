@@ -1,0 +1,63 @@
+version: "3.9"
+services:
+  nginx:
+    build:
+      context: nginx
+    image: custom-nginx
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    depends_on:
+      - auth-server
+      - db-server
+  auth-server-db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+    restart: always
+    volumes:
+      - auth-server-db:/var/lib/postgresql/data
+  auth-server:
+    image: quay.io/keycloak/keycloak:22.0
+    command:
+      - start
+    environment:
+      KC_HOSTNAME_URL: ${URL}/auth
+      KC_HOSTNAME_ADMIN_URL: ${URL}/auth/
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: passy
+      DB_VENDOR: POSTGRES
+      DB_ADDR: auth-server-db
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_SCHEMA: public
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: always
+    ports:
+      - "127.0.0.1:8088:8080"
+    volumes:
+      - auth-server:/opt/keycloak/data
+    depends_on:
+      - auth-server-db
+  db-server:
+    image: ontotext/graphdb:10.3.2
+    depends_on:
+        - auth-server
+    environment:
+      GDB_JAVA_OPTS: -Dgraphdb.external-url=${URL}/db-server -Dgraphdb.auth.methods=openid -Dgraphdb.auth.openid.issuer=http://auth-server:8080/realms/termit -Dgraphdb.auth.openid.token_issuer=${URL}/auth/realms/termit -Dgraphdb.auth.openid.client_id=${GDB_CLIENTID} -Dgraphdb.auth.openid.username_claim=preferred_username -Dgraphdb.auth.openid.auth_flow=code -Dgraphdb.auth.openid.token_type=access -Dgraphdb.auth.openid.proxy=true -Ddefault.min.distinct.threshold=67108864 -Dgraphdb.workbench.cors.enable=true -Dgraphdb.workbench.cors.origin=* -Dgraphdb.workbench.cors.expose-headers=*
+    restart: always
+    ports:
+      - "127.0.0.1:7200:7200"
+    volumes:
+      - db-server:/opt/graphdb/home
+volumes:
+  auth-server-db:
+  auth-server:
+  db-server:
+
