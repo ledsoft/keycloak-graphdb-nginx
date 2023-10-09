@@ -28,7 +28,7 @@ services:
       KC_IMPORT: /tmp/import/react-export.json
       KC_HOSTNAME_URL: ${URL}/auth
       KC_HOSTNAME_ADMIN_URL: ${URL}/auth/
-      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HOSTNAME_STRICT_BACKCHANNEL: true
       KC_PROXY: edge
       KC_HTTP_ENABLED: true
       KEYCLOAK_ADMIN: admin
@@ -52,7 +52,7 @@ services:
     depends_on:
         - auth-server
     environment:
-      GDB_JAVA_OPTS: -Dgraphdb.external-url=${URL}/db-server -Dgraphdb.auth.methods=openid -Dgraphdb.auth.openid.issuer=http://auth-server:8080/realms/termit -Dgraphdb.auth.openid.token_issuer=${URL}/auth/realms/termit -Dgraphdb.auth.openid.client_id=${GDB_CLIENTID} -Dgraphdb.auth.openid.username_claim=preferred_username -Dgraphdb.auth.openid.auth_flow=code -Dgraphdb.auth.openid.token_type=access -Dgraphdb.auth.openid.proxy=true -Ddefault.min.distinct.threshold=67108864 -Dgraphdb.workbench.cors.enable=true -Dgraphdb.workbench.cors.origin=* -Dgraphdb.workbench.cors.expose-headers=*
+      GDB_JAVA_OPTS: -Dgraphdb.external-url=${URL}/db-server -Dgraphdb.auth.database=oauth -Dgraphdb.auth.oauth.roles_claim=roles -Dgraphdb.auth.oauth.default_roles=ROLE_USER -Dgraphdb.auth.methods=openid -Dgraphdb.auth.openid.issuer=${URL}/auth/realms/termit -Dgraphdb.auth.openid.client_id=graphdb -Dgraphdb.auth.openid.username_claim=preferred_username -Dgraphdb.auth.openid.auth_flow=code -Dgraphdb.auth.openid.token_type=access -Ddefault.min.distinct.threshold=67108864 -Dgraphdb.workbench.cors.enable=true -Dgraphdb.workbench.cors.origin=* -Dgraphdb.workbench.cors.expose-headers=*
     restart: always
     ports:
       - "127.0.0.1:7200:7200"
