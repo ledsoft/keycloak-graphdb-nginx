@@ -52,7 +52,7 @@ services:
     depends_on:
         - auth-server
     environment:
-      GDB_JAVA_OPTS: -Dgraphdb.external-url=${URL}/db-server -Dgraphdb.auth.database=oauth -Dgraphdb.auth.oauth.roles_claim=roles -Dgraphdb.auth.oauth.roles_prefix=GDB_ -Dgraphdb.auth.oauth.default_roles=ROLE_USER -Dgraphdb.auth.methods=openid -Dgraphdb.auth.openid.issuer=${URL}/auth/realms/termit -Dgraphdb.auth.openid.client_id=graphdb -Dgraphdb.auth.openid.username_claim=preferred_username -Dgraphdb.auth.openid.auth_flow=code -Dgraphdb.auth.openid.token_type=access -Ddefault.min.distinct.threshold=67108864 -Dgraphdb.workbench.cors.enable=true -Dgraphdb.workbench.cors.origin=* -Dgraphdb.workbench.cors.expose-headers=*
+      GDB_JAVA_OPTS: -Dgraphdb.external-url=${URL}/db-server -Dgraphdb.auth.database=oauth -Dgraphdb.auth.oauth.roles_claim=realm_access.roles -Dgraphdb.auth.oauth.roles_prefix=GDB_ -Dgraphdb.auth.oauth.default_roles=ROLE_USER -Dgraphdb.auth.methods=openid -Dgraphdb.auth.openid.issuer=${URL}/auth/realms/termit -Dgraphdb.auth.openid.client_id=graphdb -Dgraphdb.auth.openid.username_claim=preferred_username -Dgraphdb.auth.openid.auth_flow=code -Dgraphdb.auth.openid.token_type=access -Ddefault.min.distinct.threshold=67108864 -Dgraphdb.workbench.cors.enable=true -Dgraphdb.workbench.cors.origin=* -Dgraphdb.workbench.cors.expose-headers=*
     restart: always
     ports:
       - "127.0.0.1:7200:7200"

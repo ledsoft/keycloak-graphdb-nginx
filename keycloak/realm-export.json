@@ -73,6 +73,24 @@
         "attributes": {}
       },
       {
+        "id": "843bc220-bbca-469b-ba1b-a0b73971414d",
+        "name": "GDB_READ_REPO_*",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "50150ff9-e1a0-41c9-9017-e76bdf295b8a",
+        "attributes": {}
+      },
+      {
+        "id": "5ca52fd8-5158-466c-ab16-3bf96f002acf",
+        "name": "GDB_WRITE_REPO_*",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "50150ff9-e1a0-41c9-9017-e76bdf295b8a",
+        "attributes": {}
+      },
+      {
         "id": "8b24931c-824e-48c8-8ea5-17565ad42681",
         "name": "default-roles-termit",
         "description": "${role_default-roles}",
@@ -1155,21 +1173,6 @@
             "claim.name": "realm_access.roles",
             "jsonType.label": "String",
             "multivalued": "true"
-          }
-        },
-        {
-          "id": "b816173c-7f21-440c-a588-2a300a53eaa2",
-          "name": "GraphDB role mapper",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "consentRequired": false,
-          "config": {
-            "multivalued": "true",
-            "userinfo.token.claim": "true",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "roles",
-            "jsonType.label": "String"
           }
         },
         {

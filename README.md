@@ -8,7 +8,9 @@ Here are some important configuration notes for the whole orchestration as well 
 
 ### Keycloak
 
-Use the exported realm configuration (configured in `docker-compose.yml`). It contains a client configured for GraphDB running at `http://172.17.0.0.1` (Docker public interface on my computer - update this value as necessary). The GraphDB client (`graphdb`) is set to use `public` access type, mainly because the GraphDB workbench UI is calling Keycloak, so there is no secret-based access. It also defines a couple of roles specific for GraphDB (they start with the `GDB_` prefix). GraphDB admin should be assigned the `GDB_ADMIN_ROLE` and there should be at least one so that the admin can create repositories and provide other users access to them. Anyone without a role will have the role `ROLE_USER` assigned by GraphDB itself (see below). There are two scopes required by the client. One is a role mapping scope that adds a `roles` claim to the access token (GraphDB does not support nested role claims that are by default provided by Keycloak). The other adds an `aud` claim to the access token.
+Use the exported realm configuration (configured in `docker-compose.yml`). It contains a client configured for GraphDB running at `http://172.17.0.1` (Docker public interface on my computer - update this value as necessary). The GraphDB client (`graphdb`) is set to use `public` access type, mainly because the GraphDB workbench UI is calling Keycloak, so there is no secret-based access. It also defines a couple of roles specific for GraphDB (they start with the `GDB_` prefix). GraphDB admin should be assigned the `GDB_ADMIN_ROLE` and there should be at least one so that the admin can create repositories and provide other users access to them. Anyone without a role will have the role `ROLE_USER` assigned by GraphDB itself (see below). Roles `GDB_READ_REPO_*` and `GDB_WRITE_REPO_*` authorize the user to read/write to all repositories. These are the roles that should be used for regular users. It is also possible to allow access only to specific repositories (see the [docs](https://graphdb.ontotext.com/documentation/10.3/access-control.html#what-s-in-this-document) for details).
+
+There are two scopes required by the client. One is a role mapping scope that adds a claim containing user roles (`realm_access.roles`) to the access token. The other adds an `aud` claim to the access token.
 
 ### GraphDB
 
@@ -22,7 +24,7 @@ graphdb.auth.openid.username_claim = preferred_username
 graphdb.auth.openid.auth_flow = code
 graphdb.auth.openid.token_type = access
 graphdb.auth.database = oauth
-graphdb.auth.oauth.roles_claim = roles
+graphdb.auth.oauth.roles_claim = realm_access.roles
 graphdb.auth.oauth.roles_prefix = GDB_
 graphdb.auth.oauth.default_roles = ROLE_USER
 ```
